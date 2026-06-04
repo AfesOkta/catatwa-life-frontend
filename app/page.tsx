@@ -30,15 +30,15 @@ export default function Home() {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md">
-          <h3 className="text-xl font-semibold mb-4">Contoh Penggunaan</h3>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Contoh Penggunaan</h2>
           <div className="text-left space-y-3">
             <div className="bg-green-50 p-3 rounded">
-              <p className="text-sm text-gray-600">Ketik:</p>
+              <p className="text-sm text-gray-700">Ketik:</p>
               <p className="font-mono text-green-700">"jual kopi 2 40000"</p>
             </div>
-            <div className="text-center text-gray-400">↓</div>
+            <div className="text-center text-gray-500" aria-hidden="true">↓</div>
             <div className="bg-gray-50 p-3 rounded">
-              <p className="text-sm text-gray-600">Langsung jadi transaksi!</p>
+              <p className="text-sm text-gray-700">Langsung jadi transaksi!</p>
               <p className="font-semibold text-green-600">+ Rp 40.000</p>
             </div>
           </div>

@@ -7,15 +7,29 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const loginSchema = z.object({
+  email: z.string().email('Email tidak valid'),
+  password: z.string().min(6, 'Password minimal 6 karakter')
+});
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur'
+  });
+
   const { mutate: login, isPending } = useLogin();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    login({ email, password });
+  const onSubmit = (data: { email: string; password: string }) => {
+    login(data);
   };
 
   return (
@@ -25,18 +39,20 @@ export default function LoginForm() {
         <CardDescription>Masuk ke akun CATATWA-LITE Anda</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="nama@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register('email')}
               required
-              disabled={isPending}
+              disabled={isPending || isSubmitting}
             />
+            {errors.email && (
+              <span className="text-sm text-red-500 block mt-1">{String(errors.email.message)}</span>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
@@ -44,14 +60,16 @@ export default function LoginForm() {
               id="password"
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register('password')}
               required
-              disabled={isPending}
+              disabled={isPending || isSubmitting}
             />
+            {errors.password && (
+              <span className="text-sm text-red-500 block mt-1">{String(errors.password.message)}</span>
+            )}
           </div>
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? 'Loading...' : 'Login'}
+          <Button type="submit" className="w-full" disabled={isPending || isSubmitting}>
+            {isPending || isSubmitting ? 'Loading...' : 'Login'}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             Belum punya akun?{' '}

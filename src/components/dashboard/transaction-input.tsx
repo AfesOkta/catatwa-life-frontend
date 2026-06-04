@@ -167,7 +167,7 @@ export default function TransactionInput() {
   };
 
   return (
-    <Card className="h-[600px] flex flex-col shadow-md border-gray-200">
+    <Card className="h-[calc(100dvh-100px)] md:h-[600px] flex flex-col shadow-md border-gray-200">
       <CardHeader className="py-3 border-b bg-green-50/50">
         <CardTitle className="text-lg font-medium flex items-center text-green-800">
           <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
@@ -176,16 +176,16 @@ export default function TransactionInput() {
       </CardHeader>
       
       {/* Chat Area */}
-      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 bg-[url('/chat-bg.png')] bg-opacity-5">
+      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4 bg-[url('/chat-bg.png')] bg-opacity-5" aria-live="polite" role="log">
         
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 space-y-2">
+          <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 space-y-2">
             <div className="p-4 bg-gray-50 rounded-full mb-2">
-              <Send className="h-8 w-8 text-gray-300" />
+              <Send className="h-8 w-8 text-gray-400" />
             </div>
             <p className="text-sm">Mulai mencatat seperti chatting</p>
             <div className="text-xs space-y-1 mt-4">
-              <p className="font-medium text-gray-500">Contoh ketik:</p>
+              <p className="font-medium text-gray-600">Contoh ketik:</p>
               <p className="bg-gray-100 px-3 py-1 rounded-md inline-block">jual kopi 2 40000</p>
               <p className="bg-gray-100 px-3 py-1 rounded-md inline-block mt-1">beli gula 1 20000</p>
             </div>
@@ -245,9 +245,15 @@ export default function TransactionInput() {
                     <div className="flex items-start space-x-3 mb-2">
                       <div className={`mt-0.5 p-1 rounded-full ${transaction.type === "income" ? "bg-green-100" : "bg-red-100"}`}>
                         {transaction.type === "income" ? (
-                          <CheckCircle2 className="h-4 w-4 text-green-600" />
+                          <>
+                            <span className="sr-only">Pemasukan: </span>
+                            <CheckCircle2 className="h-4 w-4 text-green-600" aria-hidden="true" />
+                          </>
                         ) : (
-                          <X className="h-4 w-4 text-red-600" />
+                          <>
+                            <span className="sr-only">Pengeluaran: </span>
+                            <X className="h-4 w-4 text-red-600" aria-hidden="true" />
+                          </>
                         )}
                       </div>
                       <div className="flex-1">
@@ -265,26 +271,26 @@ export default function TransactionInput() {
                     {message.status !== "saved" ? (
                       <div className="flex space-x-2 mt-3 pt-2 border-t border-gray-100">
                         <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 h-8 text-xs bg-green-50 hover:bg-green-100 border-green-200 text-green-700"
+                          variant="default"
+                          className="flex-1 h-11 text-sm bg-green-600 hover:bg-green-700 active:scale-95 transition-transform"
                           onClick={() => handleSaveTransaction(message.id, transaction)}
                           disabled={message.status === "pending"}
+                          aria-label="Simpan transaksi"
                         >
                           {message.status === "pending" ? (
-                            <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Menyimpan</>
+                            <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Menyimpan</>
                           ) : (
                             "Simpan"
                           )}
                         </Button>
                         <Button
                           variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                          className="h-11 w-11 p-0 text-red-500 active:bg-red-100 active:scale-95 transition-transform"
                           onClick={() => handleRemoveTransaction(message.id)}
                           disabled={message.status === "pending"}
+                          aria-label="Hapus transaksi"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-5 w-5" />
                         </Button>
                       </div>
                     ) : (
@@ -306,20 +312,27 @@ export default function TransactionInput() {
       {/* Input Area */}
       <div className="p-3 border-t bg-gray-50/50">
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+          <label htmlFor="transaction-input" className="sr-only">Ketik transaksi</label>
           <input
+            id="transaction-input"
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ketik: jual kopi 2 40000"
-            className="flex-1 bg-white border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-            disabled={isProcessing}
-            autoComplete="off"
-          />
-          <Button
-            type="submit"
-            disabled={isProcessing || !input.trim()}
-            className="rounded-full w-10 h-10 p-0 bg-green-600 hover:bg-green-700 shrink-0 shadow-sm"
-          >
+             value={input}
+             onChange={(e) => setInput(e.target.value)}
+             placeholder="Ketik: jual kopi 2 40000"
+             enterKeyHint="send"
+             className="flex-1 bg-white border border-gray-300 rounded-full px-4 py-3 text-base md:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+             disabled={isProcessing}
+             autoComplete="off"
+             autoCorrect="off"
+             autoCapitalize="none"
+             spellCheck="false"
+           />
+           <Button
+             type="submit"
+             disabled={isProcessing || !input.trim()}
+             className="rounded-full w-12 h-12 p-0 bg-green-600 hover:bg-green-700 active:scale-95 transition-transform shrink-0 shadow-sm"
+             aria-label="Kirim pesan"
+           >
             {isProcessing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (

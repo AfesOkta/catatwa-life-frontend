@@ -31,9 +31,15 @@ export default function TransactionCard({ transaction }: TransactionCardProps) {
     <div className="border rounded-lg p-4">
       <div className="flex items-start space-x-3">
         {transaction.type === 'income' ? (
-          <CheckCircle2 className="h-4 w-4 text-green-600 mt-1" />
+          <>
+            <span className="sr-only">Pemasukan: </span>
+            <CheckCircle2 className="h-4 w-4 text-green-600 mt-1 shrink-0" aria-hidden="true" />
+          </>
         ) : (
-          <X className="h-4 w-4 text-red-600 mt-1" />
+          <>
+            <span className="sr-only">Pengeluaran: </span>
+            <X className="h-4 w-4 text-red-600 mt-1 shrink-0" aria-hidden="true" />
+          </>
         )}
         <div className="flex-1 space-y-1">
           <p className="font-medium">{transaction.itemName}</p>
